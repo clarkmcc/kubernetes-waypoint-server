@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-ingress-controller
+  namespace: nginx
+  labels:
+    app: nginx-ingress-controller
+data:
+  enable-vts-status: 'true'
+  proxy-body-size: '500m'
+  proxy-connect-timeout: '20'
+  proxy-send-timeout: '120'
+  proxy-read-timeout: '120'
+  keep-alive: '3600'
+  use-forwarded-headers: 'true'
+  force-ssl-redirect: 'true'

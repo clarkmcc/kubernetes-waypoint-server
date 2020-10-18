@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: waypoint
+  namespace: waypoint
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+    - secretName: waypoint-tls-cert
+      hosts:
+        - waypoint.clarkmccauley.com
+  rules:
+    - host: waypoint.clarkmccauley.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: waypoint
+              servicePort: 9702

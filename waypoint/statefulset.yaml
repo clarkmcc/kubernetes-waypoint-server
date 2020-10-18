@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: waypoint
+  namespace: waypoint
+spec:
+  serviceName: waypoint
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waypoint
+  template:
+    metadata:
+      labels:
+        app: waypoint
+    spec:
+      # Needed for using PV on GKE, related to issue here
+      # https://github.com/prometheus-operator/prometheus-operator/issues/541
+      securityContext:
+        fsGroup: 65534
+      serviceAccount: default
+      containers:
+        - name: waypoint
+          image: hashicorp/waypoint:latest
+          args:
+            - "server"
+            - "run"
+            - "-db=/var/waypoint/data.db"
+            - "-accept-tos"
+            - "-advertise-tls-skip-verify"
+          ports:
+            - containerPort: 9702
+            - containerPort: 9701
+          volumeMounts:
+            - name: waypoint-storage-volume
+              mountPath: /var/waypoint/
+      volumes:
+        - name: waypoint-storage-volume
+          persistentVolumeClaim:
+            readOnly: false
+            claimName: waypoint-storage-claim
